@@ -13,3 +13,6 @@ MIX_ENV=prod mix compile
 
 # Build the release and overwrite the existing release directory
 MIX_ENV=prod mix release --overwrite
+
+# Run migrations
+_build/prod/rel/chat_bot/bin/chat_bot eval "Release.migrate"
