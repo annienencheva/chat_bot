@@ -4,12 +4,24 @@ defmodule ChatBot.Whippy.Messenger do
   """
 
   @sms_path "/v1/messaging/sms"
+  @conversation_path "/v1/conversations/"
 
   @spec send_message(String.t(), String.t()) :: {:ok, map()} | {:error, any}
   def send_message(to, body) do
     (base_url() <> @sms_path)
     |> HTTPoison.post(payload(to, body), headers())
     |> handle_response()
+  end
+
+  @spec fetch_messages(String.t()) :: {:ok, list()} | {:error, any}
+  def fetch_messages(conversation_id) do
+    (base_url() <> @conversation_path <> conversation_id)
+    |> HTTPoison.get(headers())
+    |> handle_response()
+    |> case do
+      {:ok, %{"data" => %{"messages" => messages}}} -> {:ok, messages}
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   defp payload(to, body) do
