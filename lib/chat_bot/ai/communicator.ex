@@ -6,6 +6,8 @@ defmodule ChatBot.Ai.Communicator do
   alias ChatBot.Prompts
   alias ChatBot.Prompts.Prompt
 
+  @default_model "gpt-3.5-turbo"
+
   @doc """
   This function is responsible for sending a request to the OpenAI API.
 
@@ -14,7 +16,7 @@ defmodule ChatBot.Ai.Communicator do
   """
   def send(messages_list) do
     OpenAI.chat_completion(
-      model: "gpt-3.5-turbo",
+      model: model(),
       messages: [
         %{role: "system", content: prompt()} | convert_messages_to_open_ai_format(messages_list)
       ]
@@ -36,9 +38,25 @@ defmodule ChatBot.Ai.Communicator do
     end
   end
 
+  defp model() do
+    with model_name when not is_nil(model_name) <- System.get_env("AI_MODEL"),
+         {:ok, model_name} <- validate_model(model_name) do
+      model_name
+    else
+      _ -> @default_model
+    end
+  end
+
+  defp validate_model(model_name) do
+    {:ok, %{data: models_list}} = OpenAI.models()
+    supported_model_names = Enum.map(models_list, & &1["id"])
+
+    if model_name in supported_model_names, do: {:ok, model_name}, else: {:error, :invalid}
+  end
+
   defp prompt() do
     with prompt_id when not is_nil(prompt_id) <- System.get_env("PROMPT_ID"),
-         prompt_id <- String.to_integer(prompt_id),
+         {prompt_id, _} <- Integer.parse(prompt_id),
          %Prompt{body: body} <- Prompts.get_prompt(prompt_id) do
       body
     else
