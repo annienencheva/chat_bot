@@ -49,7 +49,7 @@ defmodule ChatBot.Processor do
 
   defp parse_reply(reply) do
     case String.split(reply, "END") do
-      [reply, ""] -> {reply, :end}
+      [reply, _end] -> {reply, :end}
       [reply] -> {reply, :continue}
     end
   end
