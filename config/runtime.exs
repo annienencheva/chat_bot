@@ -113,9 +113,7 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 
-
   # releases
 
   config :chat_bot, ChatBotWeb.Endpoint, server: true
-
 end

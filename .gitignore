@@ -37,5 +37,7 @@ npm-debug.log
 
 .idea
 
+.env
+
 chat_bot.iml
 

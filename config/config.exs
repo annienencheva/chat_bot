@@ -12,7 +12,7 @@ config :chat_bot,
 
 # Configures the endpoint
 config :chat_bot, ChatBotWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "localhost", port: 5000],
   render_errors: [
     formats: [html: ChatBotWeb.ErrorHTML, json: ChatBotWeb.ErrorJSON],
     layout: false
@@ -50,6 +50,10 @@ config :tailwind,
     ),
     cd: Path.expand("../assets", __DIR__)
   ]
+
+config :openai,
+  api_key: System.get_env("OPENAI_API_KEY"),
+  organization_key: System.get_env("OPENAI_ORGANIZATION_KEY")
 
 # Configures Elixir's Logger
 config :logger, :console,
