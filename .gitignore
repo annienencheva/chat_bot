@@ -35,3 +35,7 @@ chat_bot-*.tar
 npm-debug.log
 /assets/node_modules/
 
+.idea
+
+chat_bot.iml
+

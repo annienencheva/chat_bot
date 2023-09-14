@@ -112,4 +112,10 @@ if config_env() == :prod do
   #     config :swoosh, :api_client, Swoosh.ApiClient.Hackney
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
+
+
+  # releases
+
+  config :chat_bot, ChatBotWeb.Endpoint, server: true
+
 end
