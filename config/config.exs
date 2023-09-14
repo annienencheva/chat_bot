@@ -53,7 +53,8 @@ config :tailwind,
 
 config :openai,
   api_key: System.get_env("OPENAI_API_KEY"),
-  organization_key: System.get_env("OPENAI_ORGANIZATION_KEY")
+  organization_key: System.get_env("OPENAI_ORGANIZATION_KEY"),
+  http_options: [recv_timeout: 100_000]
 
 # Configures Elixir's Logger
 config :logger, :console,
