@@ -7,6 +7,10 @@ defmodule ChatBot.Application do
 
   @impl true
   def start(_type, _args) do
+    # ETS table that will store the conversation history
+    # It will be populated on every message.created event received from Whippy
+    :ets.new(:conversation_messages, [:named_table, :public])
+
     children = [
       # Start the Telemetry supervisor
       ChatBotWeb.Telemetry,

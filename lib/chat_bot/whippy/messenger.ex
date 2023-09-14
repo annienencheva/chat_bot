@@ -5,18 +5,19 @@ defmodule ChatBot.Whippy.Messenger do
 
   @sms_path "/v1/messaging/sms"
 
-  def send(body) do
-    "#{base_url()}#{@sms_path}"
-    |> HTTPoison.post(payload(body), headers())
+  @spec send_message(String.t(), String.t()) :: {:ok, map()} | {:error, any}
+  def send_message(to, body) do
+    (base_url() <> @sms_path)
+    |> HTTPoison.post(payload(to, body), headers())
     |> handle_response()
   end
 
-  defp payload(body) do
+  defp payload(to, body) do
     %{
       attachments: [],
       body: body,
       from: from_phone(),
-      to: "+14155552671"
+      to: to
     }
     |> Jason.encode!()
   end
@@ -34,7 +35,7 @@ defmodule ChatBot.Whippy.Messenger do
 
   defp handle_response(response) do
     case response do
-      {:ok, %{body: body, status_code: 201}} -> {:ok, Jason.decode!(body)}
+      {:ok, %{body: body, status_code: code}} when code in 200..299 -> {:ok, Jason.decode!(body)}
       {:ok, %{body: body, status_code: _code}} -> {:error, body}
       {:error, %{reason: reason}} -> {:error, reason}
     end

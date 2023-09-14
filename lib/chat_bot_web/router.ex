@@ -20,6 +20,12 @@ defmodule ChatBotWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/api", ChatBotWeb.Api do
+    pipe_through :api
+
+    post "/whippy/message", Webhooks.WhippyController, :message
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", ChatBotWeb do
   #   pipe_through :api
