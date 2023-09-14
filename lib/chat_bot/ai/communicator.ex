@@ -29,28 +29,6 @@ defmodule ChatBot.Ai.Communicator do
     |> tap(&update_request(request, &1))
   end
 
-  defp create_request(params) do
-    params = Enum.into(params, %{})
-
-    Requests.create_request(%{
-      url: "https://api.openai.com/v1/chat/completions",
-      body: params
-    })
-  end
-
-  defp update_request(request, response) do
-    case response do
-      {:ok, response} ->
-        Requests.update_request(request, %{response: response, status_code: 200})
-
-      {:error, %{status_code: status_code, body: body}} ->
-        Requests.update_request(request, %{response: body, status_code: status_code})
-
-      {:error, reason} ->
-        Requests.update_request(request, %{response: %{error: reason}, status_code: 500})
-    end
-  end
-
   defp convert_messages_to_open_ai_format(messages) do
     messages
     |> Enum.map(fn message ->
@@ -117,5 +95,31 @@ defmodule ChatBot.Ai.Communicator do
 
     If you feel like the intent of the conversation is unrelated to a personal injury case just respond with "END"
     """
+  end
+
+  ############################
+  ###  Logging Operations  ###
+  ############################
+
+  defp create_request(params) do
+    params = Enum.into(params, %{})
+
+    Requests.create_request(%{
+      url: "https://api.openai.com/v1/chat/completions",
+      body: params
+    })
+  end
+
+  defp update_request(request, response) do
+    case response do
+      {:ok, response} ->
+        Requests.update_request(request, %{response: response, status_code: 200})
+
+      {:error, %{status_code: status_code, body: body}} ->
+        Requests.update_request(request, %{response: body, status_code: status_code})
+
+      {:error, reason} ->
+        Requests.update_request(request, %{response: %{error: reason}, status_code: 500})
+    end
   end
 end
