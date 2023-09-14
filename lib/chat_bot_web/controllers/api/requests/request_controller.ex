@@ -6,8 +6,8 @@ defmodule ChatBotWeb.Api.RequestController do
 
   action_fallback ChatBotWeb.FallbackController
 
-  def index(conn, _params) do
-    requests = Requests.list_requests()
+  def index(conn, params) do
+    requests = Requests.list_requests(params["limit"], params["offset"])
     render(conn, :index, requests: requests)
   end
 

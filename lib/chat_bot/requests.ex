@@ -17,8 +17,12 @@ defmodule ChatBot.Requests do
       [%Request{}, ...]
 
   """
-  def list_requests do
-    Repo.all(Request)
+  def list_requests(limit \\ 10, offset \\ 10) do
+    Request
+    |> limit(^limit)
+    |> offset(^offset)
+    |> order_by(desc: :id)
+    |> Repo.all()
   end
 
   @doc """
