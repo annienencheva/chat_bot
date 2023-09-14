@@ -3,6 +3,9 @@ defmodule ChatBot.Ai.Communicator do
   This module is responsible for communicating with the OpenAI API.
   """
 
+  alias ChatBot.Prompts
+  alias ChatBot.Prompts.Prompt
+
   @doc """
   This function is responsible for sending a request to the OpenAI API.
 
@@ -34,6 +37,16 @@ defmodule ChatBot.Ai.Communicator do
   end
 
   defp prompt() do
+    with prompt_id when not is_nil(prompt_id) <- System.get_env("PROMPT_ID"),
+         prompt_id <- String.to_integer(prompt_id),
+         %Prompt{body: body} <- Prompts.get_prompt(prompt_id) do
+      body
+    else
+      _ -> default_prompt()
+    end
+  end
+
+  defp default_prompt() do
     """
     Your are a personal injury case qualification assistant. Your jobs is to get a new lead to answer the following questions.
 

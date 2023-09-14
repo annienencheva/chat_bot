@@ -24,6 +24,7 @@ defmodule ChatBotWeb.Router do
     pipe_through :api
 
     post "/whippy/message", Webhooks.WhippyController, :message
+    resources "/prompts", PromptController, except: [:new, :edit]
   end
 
   # Other scopes may use custom stacks.
