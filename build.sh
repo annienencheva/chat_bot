@@ -15,4 +15,4 @@ MIX_ENV=prod mix compile
 MIX_ENV=prod mix release --overwrite
 
 # Run migrations
-_build/prod/rel/chat_bot/bin/chat_bot eval "Release.migrate"
+_build/prod/rel/chat_bot/bin/chat_bot eval "ChatBot.Release.migrate"
