@@ -3,7 +3,7 @@ defmodule ChatBot.Ai.Communicator do
   This module is responsible for communicating with the OpenAI API.
   """
 
-  alias ChatBot.Prompts
+  alias ChatBot.{Prompts, Requests}
   alias ChatBot.Prompts.Prompt
 
   @default_model "gpt-3.5-turbo"
@@ -15,12 +15,40 @@ defmodule ChatBot.Ai.Communicator do
 
   """
   def send(messages_list) do
-    OpenAI.chat_completion(
+    params = [
       model: model(),
       messages: [
         %{role: "system", content: prompt()} | convert_messages_to_open_ai_format(messages_list)
       ]
-    )
+    ]
+
+    {:ok, request} = create_request(params)
+
+    params
+    |> OpenAI.chat_completion()
+    |> tap(&update_request(request, &1))
+  end
+
+  defp create_request(params) do
+    params = Enum.into(params, %{})
+
+    Requests.create_request(%{
+      url: "https://api.openai.com/v1/chat/completions",
+      body: params
+    })
+  end
+
+  defp update_request(request, response) do
+    case response do
+      {:ok, response} ->
+        Requests.update_request(request, %{response: response, status_code: 200})
+
+      {:error, %{status_code: status_code, body: body}} ->
+        Requests.update_request(request, %{response: body, status_code: status_code})
+
+      {:error, reason} ->
+        Requests.update_request(request, %{response: %{error: reason}, status_code: 500})
+    end
   end
 
   defp convert_messages_to_open_ai_format(messages) do
